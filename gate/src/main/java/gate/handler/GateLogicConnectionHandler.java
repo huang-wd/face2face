@@ -11,26 +11,27 @@ import protobuf.Utils;
 import protobuf.generate.internal.Internal;
 
 /**
- * Created by Dell on 2016/2/2.
+ * @author huangweidong
  */
 public class GateLogicConnectionHandler extends SimpleChannelInboundHandler<Message> {
     private static final Logger logger = LoggerFactory.getLogger(GateLogicConnectionHandler.class);
+
     private static ChannelHandlerContext _gateLogicConnection;
 
-    public static ChannelHandlerContext getGatelogicConnection() {
+    public static ChannelHandlerContext getGateLogicConnection() {
         return _gateLogicConnection;
     }
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(ChannelHandlerContext ctx) {
         _gateLogicConnection = ctx;
         logger.info("[Gate-Logic] connection is established");
-
         //向logic发送Greet
         sendGreet2Logic();
     }
+
     @Override
-        protected void channelRead0(ChannelHandlerContext channelHandlerContext, Message message) throws Exception {
+    protected void channelRead0(ChannelHandlerContext channelHandlerContext, Message message) {
 
     }
 
@@ -38,7 +39,7 @@ public class GateLogicConnectionHandler extends SimpleChannelInboundHandler<Mess
         Internal.Greet.Builder ig = Internal.Greet.newBuilder();
         ig.setFrom(Internal.Greet.From.Gate);
         ByteBuf out = Utils.pack2Server(ig.build(), ParseRegistryMap.GREET, -1, Internal.Dest.Logic, "admin");
-        getGatelogicConnection().writeAndFlush(out);
+        getGateLogicConnection().writeAndFlush(out);
         logger.info("Gate send Green to Logic.");
     }
 }

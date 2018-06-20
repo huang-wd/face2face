@@ -13,7 +13,7 @@ import protobuf.analysis.ParseMap;
 import protobuf.generate.internal.Internal;
 
 /**
- * Created by Dell on 2016/2/2.
+ * @author huangweidong
  */
 public class GateAuthConnectionHandler extends SimpleChannelInboundHandler<Message> {
     private static final Logger logger = LoggerFactory.getLogger(GateAuthConnectionHandler.class);
@@ -22,22 +22,19 @@ public class GateAuthConnectionHandler extends SimpleChannelInboundHandler<Messa
     public static ChannelHandlerContext getGateAuthConnection() {
         return _gateAuthConnection;
     }
+
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(ChannelHandlerContext ctx) {
         _gateAuthConnection = ctx;
         logger.info("[Gate-Auth] connection is established");
-
         sendGreet2Auth();
     }
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Message message) throws Exception {
         Internal.GTransfer gtf = (Internal.GTransfer) message;
-
         Message cmd = ParseMap.getMessage(gtf.getPtoNum(), gtf.getMsg().toByteArray());
-
         ByteBuf out = Utils.pack2Client(cmd);
-
         ClientConnectionMap.getClientConnection(gtf.getNetId()).getCtx().writeAndFlush(out);
     }
 

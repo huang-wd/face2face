@@ -8,17 +8,13 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import protobuf.code.PacketDecoder;
 import protobuf.code.PacketEncoder;
 
 /**
- * Created by win7 on 2016/3/5.
+ * @author huangweidong
  */
 public class AuthLogicConnection {
-    private static final Logger logger = LoggerFactory.getLogger(AuthLogicConnection.class);
-
     public static void startAuthLogicConnection(String ip, int port) {
         EventLoopGroup group = new NioEventLoopGroup();
 
@@ -27,13 +23,12 @@ public class AuthLogicConnection {
                 .channel(NioSocketChannel.class)
                 .handler(new ChannelInitializer<SocketChannel>() {
                     @Override
-                    protected void initChannel(SocketChannel channel)
-                            throws Exception {
+                    protected void initChannel(SocketChannel channel) {
                         ChannelPipeline pipeline = channel.pipeline();
-
                         pipeline.addLast("MessageDecoder", new PacketDecoder());
                         pipeline.addLast("MessageEncoder", new PacketEncoder());
-                        pipeline.addLast("AuthLogicConnectionHandler", new AuthLogicConnectionHandler());  //Auth -> gate
+                        //Auth -> gate
+                        pipeline.addLast("AuthLogicConnectionHandler", new AuthLogicConnectionHandler());
                     }
                 });
 

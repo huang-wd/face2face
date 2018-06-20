@@ -9,33 +9,30 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Redis连接池管理器
+ *
+ * @author huangweidong
  */
 public class RedisPoolManager {
 
     private static final Logger logger = LoggerFactory.getLogger(RedisPoolManager.class);
 
-    public  String REDIS_SERVER = "localhost";
+    public String REDIS_SERVER = "localhost";
 
-    public  int REDIS_PORT = 6666;
+    public int REDIS_PORT = 6666;
 
     private JedisPool pool = null;
 
     private JedisPool getInstance() {
-
         if (pool == null) {
-
             JedisPoolConfig config = new JedisPoolConfig();
             config.setMaxTotal(1000);
             config.setMaxIdle(20);
-            config.setMaxWaitMillis(10 * 1000l);
+            config.setMaxWaitMillis(10 * 1000L);
             config.setTestOnBorrow(true);
             config.setTestOnReturn(true);
-
             pool = new JedisPool(config, REDIS_SERVER, REDIS_PORT, 10);
         }
-
         return pool;
-
     }
 
     /**
@@ -44,18 +41,14 @@ public class RedisPoolManager {
      * @return
      */
     public Jedis getJedis() {
-
         Jedis jedis = null;
-
         try {
             jedis = getInstance().getResource();
             // jedis.auth(REDIS_AUTH);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-
         return jedis;
-
     }
 
     /**
@@ -65,7 +58,6 @@ public class RedisPoolManager {
      */
     public void returnJedis(Jedis jedis) {
         try {
-
             if (jedis != null) {
                 getInstance().returnResource(jedis);
             }
@@ -82,14 +74,12 @@ public class RedisPoolManager {
      */
     public void returnBrokenJedis(Jedis jedis) {
         try {
-
             if (jedis != null) {
                 getInstance().returnBrokenResource(jedis);
             }
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
         }
-
     }
 
     /**

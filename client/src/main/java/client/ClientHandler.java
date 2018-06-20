@@ -21,6 +21,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
     public static ChannelHandlerContext _gateClientConnection;
 
     private static final Logger logger = LoggerFactory.getLogger(ClientHandler.class);
+
     String _userId = "";
     boolean _verify = false;
     private static int count = 0;
@@ -62,7 +63,7 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Message msg) throws Exception {
         logger.info("received message: {}", msg.getClass());
-        if(msg instanceof Auth.SResponse) {
+        if (msg instanceof Auth.SResponse) {
             Auth.SResponse sp = (Auth.SResponse) msg;
             int code = sp.getCode();
             String desc = sp.getDesc();
@@ -93,12 +94,12 @@ public class ClientHandler extends SimpleChannelInboundHandler<Message> {
                 default:
                     logger.info("Unknow code: {}", code);
             }
-        } else if(msg instanceof Chat.SPrivateChat) {
+        } else if (msg instanceof Chat.SPrivateChat) {
             logger.info("{} receiced chat message: {}.Total:{}", _userId, ((Chat.SPrivateChat) msg).getContent(), ++count);
         }
 
         //这样设置的原因是，防止两方都阻塞在输入上
-        if(_verify) {
+        if (_verify) {
             sendMessage();
             Thread.sleep(Client.frequency);
         }

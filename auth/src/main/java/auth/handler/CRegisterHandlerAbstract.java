@@ -1,6 +1,6 @@
 package auth.handler;
 
-import auth.IMHandler;
+import auth.AbstractImHandler;
 import auth.Worker;
 import auth.utils.Common;
 import auth.utils.RouteUtil;
@@ -17,15 +17,15 @@ import thirdparty.thrift.utils.DBOperator;
 /**
  * Created by win7 on 2016/3/2.
  */
-public class CRegisterHandler extends IMHandler {
-    private static final Logger logger = LoggerFactory.getLogger(CRegisterHandler.class);
+public class CRegisterHandlerAbstract extends AbstractImHandler {
+    private static final Logger logger = LoggerFactory.getLogger(CRegisterHandlerAbstract.class);
 
-    public CRegisterHandler(String userid, long netid, Message msg, ChannelHandlerContext ctx) {
+    public CRegisterHandlerAbstract(String userid, long netid, Message msg, ChannelHandlerContext ctx) {
         super(userid, netid, msg, ctx);
     }
 
     @Override
-    protected void excute(Worker worker) throws TException {
+    protected void execute(Worker worker) throws TException {
         Auth.CRegister msg = (Auth.CRegister)_msg;
 
         String userid = msg.getUserid();
@@ -37,12 +37,12 @@ public class CRegisterHandler extends IMHandler {
         //todo 写数据库要加锁
 
         if (_jedis.exists(UserUtils.genDBKey(userid))) {
-            RouteUtil.sendResponse(Common.ACCOUNT_DUMPLICATED, "Account already exists", _netid, userid);
+            RouteUtil.sendResponse(Common.ACCOUNT_DUMPLICATED, "Account already exists", _netId, userid);
             logger.info("Account already exists, userid: {}", userid);
             return;
         } else {
             _jedis.hset(UserUtils.genDBKey(userid), UserUtils.userFileds.Account.field, DBOperator.Serialize(account));
-            RouteUtil.sendResponse(Common.REGISTER_OK, "User registerd successd",_netid, userid);
+            RouteUtil.sendResponse(Common.REGISTER_OK, "User registerd successd", _netId, userid);
             logger.info("User registerd successd, userid: {}", userid);
         }
 

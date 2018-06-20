@@ -1,7 +1,7 @@
 package auth.handler;
 
 import auth.HandlerManager;
-import auth.IMHandler;
+import auth.AbstractImHandler;
 import auth.Worker;
 import com.google.protobuf.Message;
 import io.netty.buffer.ByteBuf;
@@ -16,7 +16,7 @@ import protobuf.generate.cli2srv.chat.Chat;
 import protobuf.generate.internal.Internal;
 
 /**
- * Created by win7 on 2016/3/5.
+ * @author huangweidong
  */
 public class AuthLogicConnectionHandler extends SimpleChannelInboundHandler<Message> {
     private static final Logger logger = LoggerFactory.getLogger(AuthLogicConnectionHandler.class);
@@ -24,8 +24,8 @@ public class AuthLogicConnectionHandler extends SimpleChannelInboundHandler<Mess
     private static ChannelHandlerContext _authLogicConnection;
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        setAuthLogicConnecttion(ctx);
+    public void channelActive(ChannelHandlerContext ctx) {
+        setAuthLogicConnection(ctx);
         logger.info("[Auth-Logic] connection is established");
 
         //向logic发送Greet协议
@@ -38,16 +38,14 @@ public class AuthLogicConnectionHandler extends SimpleChannelInboundHandler<Mess
         int ptoNum = gt.getPtoNum();
         Message msg = ParseMap.getMessage(ptoNum, gt.getMsg().toByteArray());
 
-        IMHandler handler = null;
-        if(msg instanceof Chat.CPrivateChat) {
+        AbstractImHandler handler = null;
+        if (msg instanceof Chat.CPrivateChat) {
             handler = HandlerManager.getHandler(ptoNum, gt.getUserId(), -1L, msg, AuthServerHandler.getGateAuthConnection());
         } else {
-            logger.error("Error Messgae Type: {}", msg.getClass());
+            logger.error("Error Message Type: {}", msg.getClass());
             return;
         }
-
         Worker.dispatch(gt.getUserId(), handler);
-
     }
 
     private void sendGreet2Logic() {
@@ -62,7 +60,7 @@ public class AuthLogicConnectionHandler extends SimpleChannelInboundHandler<Mess
         return _authLogicConnection;
     }
 
-    public static void setAuthLogicConnecttion(ChannelHandlerContext ctx) {
+    public static void setAuthLogicConnection(ChannelHandlerContext ctx) {
         _authLogicConnection = ctx;
     }
 }

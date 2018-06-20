@@ -22,9 +22,10 @@ public class ParseRegistryMap {
 
 
     public static void initRegistry() throws IOException {
-        ParseMap.register(900, Internal.GTransfer::parseFrom, Internal.GTransfer.class); //内部传输协议用
-        ParseMap.register(901, Internal.Greet::parseFrom, Internal.Greet.class); //内部传输协议用
-
+        //内部传输协议用
+        ParseMap.register(900, Internal.GTransfer::parseFrom, Internal.GTransfer.class);
+        //内部传输协议用
+        ParseMap.register(901, Internal.Greet::parseFrom, Internal.Greet.class);
         ParseMap.register(1000, Auth.CLogin::parseFrom, Auth.CLogin.class);
         ParseMap.register(1001, Auth.CRegister::parseFrom, Auth.CRegister.class);
         ParseMap.register(1002, Auth.SResponse::parseFrom, Auth.SResponse.class);

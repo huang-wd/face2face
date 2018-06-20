@@ -1,10 +1,9 @@
 package auth.handler;
 
-import auth.utils.Common;
 import com.google.protobuf.Message;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-import auth.IMHandler;
+import auth.AbstractImHandler;
 import auth.Worker;
 import org.apache.thrift.TException;
 import org.slf4j.Logger;
@@ -17,20 +16,20 @@ import protobuf.generate.internal.Internal;
 /**
  * Created by win7 on 2016/3/5.
  */
-public class CPrivateChatHandler extends IMHandler{
-    private static final Logger logger = LoggerFactory.getLogger(CPrivateChatHandler.class);
+public class CPrivateChatHandlerAbstract extends AbstractImHandler {
+    private static final Logger logger = LoggerFactory.getLogger(CPrivateChatHandlerAbstract.class);
 
-    public CPrivateChatHandler(String userid, long netid, Message msg, ChannelHandlerContext ctx) {
+    public CPrivateChatHandlerAbstract(String userid, long netid, Message msg, ChannelHandlerContext ctx) {
         super(userid, netid, msg, ctx);
     }
 
     @Override
-    protected void excute(Worker worker) throws TException {
+    protected void execute(Worker worker) throws TException {
         Chat.CPrivateChat msg = (Chat.CPrivateChat) _msg;
         ByteBuf byteBuf;
 
         String dest = msg.getDest();
-        Long netid = AuthServerHandler.getNetidByUserid(dest);
+        Long netid = AuthServerHandler.getNetIdByUserId(dest);
         if(netid == null) {
             logger.error("Dest User not online");
             return;

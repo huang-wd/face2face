@@ -10,13 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Created by Dell on 2016/2/1.
+ * @author huangweidong
  */
 public class GateServerHandler extends SimpleChannelInboundHandler<Message> {
-    private static final Logger logger = LoggerFactory.getLogger(GateServerHandler.class);
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    public void channelActive(ChannelHandlerContext ctx) {
         //保存客户端连接
         ClientConnectionMap.addClientConnection(ctx);
     }
