@@ -34,11 +34,9 @@ public class HandlerManager {
         }
     }
 
-    public static IMHandler getHandler(int msgNum, String userId, long netId,
-                                       Message msg, ChannelHandlerContext ctx)
-            throws IllegalAccessException, InvocationTargetException, InstantiationException {
+    public static IMHandler getHandler(int msgNum, String userId, long netId, Message msg, ChannelHandlerContext ctx) throws IllegalAccessException, InvocationTargetException, InstantiationException {
         Constructor<? extends IMHandler> constructor = _handlers.get(msgNum);
-        if(constructor == null) {
+        if (constructor == null) {
             logger.error("handler not exist, Message Number: {}", msgNum);
             return null;
         }

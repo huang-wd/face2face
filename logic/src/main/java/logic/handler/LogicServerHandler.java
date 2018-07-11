@@ -6,22 +6,15 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import logic.HandlerManager;
 import logic.IMHandler;
 import logic.Worker;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import protobuf.analysis.ParseMap;
 import protobuf.generate.internal.Internal;
 
 /**
- * Created by Dell on 2016/2/18.
+ * @author
  */
-
-
 public class LogicServerHandler extends SimpleChannelInboundHandler<Message> {
-    private static final Logger logger = LoggerFactory.getLogger(LogicServerHandler.class);
     private static ChannelHandlerContext _gateLogicConnection;
     private static ChannelHandlerContext _authLogicConnection;
-
-
 
     @Override
     protected void channelRead0(ChannelHandlerContext channelHandlerContext, Message message) throws Exception {
@@ -30,14 +23,12 @@ public class LogicServerHandler extends SimpleChannelInboundHandler<Message> {
         Message msg = ParseMap.getMessage(ptoNum, gt.getMsg().toByteArray());
 
         IMHandler handler;
-        if(msg instanceof Internal.Greet) {
+        if (msg instanceof Internal.Greet) {
             handler = HandlerManager.getHandler(ptoNum, gt.getUserId(), gt.getNetId(), msg, channelHandlerContext);
         } else {
             handler = HandlerManager.getHandler(ptoNum, gt.getUserId(), gt.getNetId(), msg, getGateLogicConnection());
         }
-
         Worker.dispatch(gt.getUserId(), handler);
-
     }
 
     public static void setGateLogicConnection(ChannelHandlerContext ctx) {
@@ -45,7 +36,7 @@ public class LogicServerHandler extends SimpleChannelInboundHandler<Message> {
     }
 
     public static ChannelHandlerContext getGateLogicConnection() {
-        if(_gateLogicConnection != null) {
+        if (_gateLogicConnection != null) {
             return _gateLogicConnection;
         } else {
             return null;
@@ -57,7 +48,7 @@ public class LogicServerHandler extends SimpleChannelInboundHandler<Message> {
     }
 
     public static ChannelHandlerContext getAuthLogicConnection() {
-        if(_authLogicConnection != null) {
+        if (_authLogicConnection != null) {
             return _authLogicConnection;
         } else {
             return null;

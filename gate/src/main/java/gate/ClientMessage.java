@@ -17,7 +17,6 @@ import protobuf.generate.internal.Internal;
 import java.io.IOException;
 import java.util.HashMap;
 
-
 /**
  * @author huangweidong
  */
